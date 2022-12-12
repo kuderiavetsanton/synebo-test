@@ -2,23 +2,23 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { TodoItem } from "../../pages";
 import colors from "../../styles/colors.module.scss";
+import variables from "../../styles/variables.module.scss";
 import Checkbox from "../Checkbox";
-import { StyledCheckbox } from "../TodoListItem";
 import { v4 as uuid } from "uuid";
 
 const StyledInput = styled.input.attrs({ type: "text" })`
   border: none;
   outline: 0;
   caret-color: ${colors.primary};
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   font-weight: 400;
 `;
 
 export const CardContainer = styled.div`
-  margin-top: 35px;
-  border-radius: 8px;
+  margin-top: 30px;
+  border-radius: ${variables.standartBr};
   background-color: #fff;
-  padding: 0.5rem 1rem;
+  padding: 0.375rem 1rem;
   align-items: center;
   display: flex;
 `;
@@ -43,7 +43,7 @@ function Form({ handleSubmit }: FormProps) {
       }}
     >
       <CardContainer>
-        <StyledCheckbox
+        <Checkbox
           checked={completed}
           onChange={() => {
             setCompleted(!completed);

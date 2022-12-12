@@ -4,23 +4,8 @@ import styles from "../styles/Home.module.css";
 import styled from "styled-components";
 import colors from "../styles/colors.module.scss";
 import Form from "../components/Form";
-import { useState } from "react";
-import TodoListItem from "../components/TodoListItem";
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { useMemo, useState } from "react";
+import TodoList from "../components/Checkbox/TodoList";
 
 const Container = styled.div`
   width: 100%;
@@ -45,16 +30,10 @@ const Header = styled.header`
 `;
 
 const Title = styled.h1`
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   letter-spacing: 0.5rem;
   color: ${colors.veryLightGray};
   margin: 0;
-`;
-
-const TodoListContainer = styled.ul`
-  border-radius: 8px;
-  background-color: #fff;
-  padding: 0;
 `;
 
 export interface TodoItem {
@@ -66,27 +45,6 @@ export interface TodoItem {
 export default function Home() {
   const [todos, setTodos] = useState<TodoItem[]>([]);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id) {
-      setTodos((items) => {
-        const oldIndex = items.findIndex(
-          (todoItem) => active.id === todoItem.id
-        );
-        const newIndex = items.findIndex((todoItem) => over.id === todoItem.id);
-
-        return arrayMove(items, oldIndex, newIndex);
-      });
-    }
-  }
   return (
     <>
       <Head>
@@ -110,42 +68,7 @@ export default function Home() {
               setTodos([...todos, value]);
             }}
           />
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={todos}
-              strategy={verticalListSortingStrategy}
-            >
-              <TodoListContainer>
-                {todos.map((currentItem, index) => {
-                  return (
-                    <TodoListItem
-                      key={index}
-                      item={currentItem}
-                      onDelete={() => {
-                        const newTodo = todos.filter(
-                          (todo) => todo.id !== currentItem.id
-                        );
-                        setTodos(newTodo);
-                      }}
-                      onCompleted={(val) => {
-                        const newTodo = todos.map((todo) => {
-                          if (todo.id === currentItem.id) {
-                            return { ...todo, completed: val };
-                          }
-                          return todo;
-                        });
-                        setTodos(newTodo);
-                      }}
-                    ></TodoListItem>
-                  );
-                })}
-              </TodoListContainer>
-            </SortableContext>
-          </DndContext>
+          {todos ? <TodoList todos={todos} setTodos={setTodos} /> : null}
         </Main>
       </Container>
     </>

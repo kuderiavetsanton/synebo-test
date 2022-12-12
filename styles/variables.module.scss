@@ -1,0 +1,11 @@
+@import "./colors.module.scss";
+
+$lightGrayBorder: 1px solid #{$lightGrayishBlue};
+$standartBr: 0.5rem;
+$cardShadow: 0px 0px 15px 2px rgba(201, 201, 201, 0.712);
+
+:export {
+  lightGrayBorder: $lightGrayBorder;
+  standartBr: $standartBr;
+  cardShadow: $cardShadow;
+}

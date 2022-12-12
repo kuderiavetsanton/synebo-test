@@ -9,6 +9,8 @@ $checkBackground: linear-gradient(
   hsl(192, 100%, 67%),
   hsl(280, 87%, 65%)
 );
+$danger: #fa5d5d;
+$white: #fff;
 
 :export {
   veryLightGray: $veryLightGray;
@@ -18,4 +20,6 @@ $checkBackground: linear-gradient(
   veryDarkGrayishBlue: $veryDarkGrayishBlue;
   primary: $primary;
   checkBackground: $checkBackground;
+  danger: $danger;
+  white: $white;
 }

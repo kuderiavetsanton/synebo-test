@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { HTMLAttributes, useState } from "react";
 import styled from "styled-components";
 import { TodoItem } from "../../pages";
 import Checkbox from "../Checkbox";
 import colors from "../../styles/colors.module.scss";
+import variables from "../../styles/variables.module.scss";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import DragHandle, { DragHandleButton } from "./DragHandle";
 
-export const StyledCheckbox = styled(Checkbox)`
-  margin-right: 0.75rem;
-`;
-
-const Text = styled.span<{ completed: boolean }>`
-  padding: 0.5rem 0;
+const TodoLabel = styled.span<{ completed: boolean }>`
+  padding: 0.25rem 0;
+  margin: 0 1rem;
   ${({ completed }) =>
     completed
       ? `text-decoration: line-through;
@@ -23,12 +24,13 @@ const CancelButton = styled.span`
   position: relative;
   margin-left: auto;
   visibility: hidden;
+  margin-right: 8px;
   opacity: 0;
-  transition: 0.2s opacity ease-in-out;
+  transition: 0.3s 0.2s ease-in-out;
   cursor: pointer;
   &:hover::before,
   &:hover::after {
-    background-color: red;
+    background-color: ${colors.danger};
   }
 
   &::after,
@@ -51,36 +53,92 @@ const CancelButton = styled.span`
   }
 `;
 
-const TodoCard = styled.li`
-  background-color: #fff;
-  padding: 0.5rem 1rem;
+export const TodoCard = styled.li<{ isDragging: boolean; isOverlay: boolean }>`
+  padding: 0.375rem 0;
+  border-radius: ${variables.standartBr};
   align-items: center;
+  background-color: ${colors.white};
   display: flex;
+  overflow: hidden;
+  ${({ isDragging }) =>
+    isDragging
+      ? `
+      opacity: 0.4;
+      & ${DragHandleButton} {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }`
+      : null}
+
+  ${({ isOverlay }) =>
+    isOverlay
+      ? `
+      & ${DragHandleButton} {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }`
+      : null}
+
   &:hover ${CancelButton} {
     visibility: visible;
     opacity: 1;
   }
 
+  &:hover ${DragHandleButton} {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+
   & + & {
-    border-top: 1px solid ${colors.lightGrayishBlue};
+    border-radius: 0;
+    border-top: ${variables.lightGrayBorder};
   }
 `;
 
-interface TodoListItemProps {
+interface TodoListItemProps extends HTMLAttributes<HTMLLIElement> {
   item: TodoItem;
   onCompleted: (completed: boolean) => void;
   onDelete: CallableFunction;
+  isOverlay?: boolean;
 }
-function TodoListItem({ item, onCompleted, onDelete }: TodoListItemProps) {
+function TodoListItem({
+  item,
+  isOverlay = false,
+  onCompleted,
+  onDelete,
+  ...otherProps
+}: TodoListItemProps) {
+  const {
+    attributes,
+    isDragging,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    ...otherProps.style,
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
   return (
-    <TodoCard>
-      <StyledCheckbox
+    <TodoCard
+      isOverlay={isOverlay}
+      {...otherProps}
+      ref={setNodeRef}
+      style={style}
+      isDragging={isDragging}
+    >
+      <DragHandle {...listeners} {...attributes} ref={setActivatorNodeRef} />
+      <Checkbox
         checked={item.completed}
         onChange={() => {
           onCompleted(!item.completed);
         }}
       />
-      <Text completed={item.completed}>{item.label}</Text>
+      <TodoLabel completed={item.completed}>{item.label}</TodoLabel>
       <CancelButton onClick={() => onDelete()} />
     </TodoCard>
   );
