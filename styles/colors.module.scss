@@ -4,12 +4,18 @@ $lightGrayishBlue: hsl(233, 11%, 84%);
 $darkGrayishBlue: hsl(236, 9%, 61%);
 $veryDarkGrayishBlue: hsl(235, 19%, 35%);
 $primary: hsl(220, 98%, 61%);
-$checkBackground: linear-gradient(hsl(192, 100%, 67%) to hsl(280, 87%, 65%));
+$checkBackground: linear-gradient(
+  to right bottom,
+  hsl(192, 100%, 67%),
+  hsl(280, 87%, 65%)
+);
 
 :export {
-  verylightgray: $veryLightGray;
-  verylightgrayishblue: $veryLightGrayishBlue;
-  lightgrayishblue: $lightGrayishBlue;
-  darkgrayishblue: $darkGrayishBlue;
-  verydarkgrayishblue: $veryDarkGrayishBlue;
+  veryLightGray: $veryLightGray;
+  veryLightGrayishBlue: $veryLightGrayishBlue;
+  lightGrayishBlue: $lightGrayishBlue;
+  darkGrayishBlue: $darkGrayishBlue;
+  veryDarkGrayishBlue: $veryDarkGrayishBlue;
+  primary: $primary;
+  checkBackground: $checkBackground;
 }
