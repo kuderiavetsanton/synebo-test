@@ -1,8 +1,16 @@
-import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useMemo,
+  useState,
+  useLayoutEffect,
+  useEffect,
+} from "react";
 import { TodoItem } from "../../../pages";
 import { SortableOverlay } from "../../SortableOverlay";
 import colors from "../../../styles/colors.module.scss";
 import variables from "../../../styles/variables.module.scss";
+import debounce from "lodash/debounce";
 
 import {
   DndContext,
@@ -31,18 +39,27 @@ const TodoListContainer = styled.ul`
   box-shadow: ${variables.cardShadow};
 `;
 
-const FilterStateContainer = styled.div`
+const FilterMobileContainer = styled.div`
   display: flex;
   justify-content: center;
   border-radius: ${variables.standartBr};
   padding: 1rem;
   gap: 1rem;
+  font-weight: 700;
   background-color: ${colors.white};
   align-items: center;
   box-shadow: ${variables.cardShadow};
 `;
 
+const FilterDesktopContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 0.375rem;
+  align-items: center;
+`;
+
 const FilterButton = styled.button<{ active?: boolean }>`
+  text-transform: capitalize;
   border: none;
   cursor: pointer;
   color: ${({ active }) => (active ? colors.primary : colors.darkGrayishBlue)};
@@ -78,6 +95,23 @@ const ClearButton = styled.button`
   }
 `;
 
+const useIsMobile = (): boolean => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
+  useLayoutEffect(() => {
+    const updateSize = (): void => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", debounce(updateSize, 150));
+    // updateSize();
+    return (): void => window.removeEventListener("resize", updateSize);
+  }, []);
+
+  return isMobile;
+};
+
 function TodoList({
   todos,
   setTodos,
@@ -89,6 +123,8 @@ function TodoList({
   const [filterState, setFilterState] = useState<
     "all" | "completed" | "active"
   >("all");
+  const isMobile = useIsMobile();
+  console.log(isMobile);
 
   const draggedItem = useMemo(
     () => todos.find((item) => item.id === dragged?.id),
@@ -131,6 +167,22 @@ function TodoList({
     }
     setDragged(null);
   }
+
+  const filterButtons = (["all", "active", "completed"] as const).map(
+    (filterLabel) => {
+      return (
+        <FilterButton
+          key={filterLabel}
+          active={filterState === filterLabel}
+          onClick={() => {
+            setFilterState(filterLabel);
+          }}
+        >
+          {filterLabel}
+        </FilterButton>
+      );
+    }
+  );
   return (
     <>
       <DndContext
@@ -182,6 +234,9 @@ function TodoList({
             </SortableOverlay>
             <TodoFooter>
               <FooterText>{activeItems.length} items left</FooterText>
+              {!isMobile ? (
+                <FilterDesktopContainer>{filterButtons}</FilterDesktopContainer>
+              ) : null}
               <ClearButton
                 as="button"
                 onClick={() => {
@@ -190,39 +245,15 @@ function TodoList({
                   });
                 }}
               >
-                {" "}
                 Clear Completed
               </ClearButton>
             </TodoFooter>
           </TodoListContainer>
         </SortableContext>
       </DndContext>
-      <FilterStateContainer>
-        <FilterButton
-          active={filterState === "all"}
-          onClick={() => {
-            setFilterState("all");
-          }}
-        >
-          All
-        </FilterButton>
-        <FilterButton
-          active={filterState === "completed"}
-          onClick={() => {
-            setFilterState("completed");
-          }}
-        >
-          Completed
-        </FilterButton>
-        <FilterButton
-          active={filterState === "active"}
-          onClick={() => {
-            setFilterState("active");
-          }}
-        >
-          Active
-        </FilterButton>
-      </FilterStateContainer>
+      {isMobile ? (
+        <FilterMobileContainer>{filterButtons}</FilterMobileContainer>
+      ) : null}
     </>
   );
 }

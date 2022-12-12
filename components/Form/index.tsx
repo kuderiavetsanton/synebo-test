@@ -12,6 +12,7 @@ const StyledInput = styled.input.attrs({ type: "text" })`
   caret-color: ${colors.primary};
   padding: 0.5rem 1rem;
   font-weight: 400;
+  width: 100%;
 `;
 
 export const CardContainer = styled.div`

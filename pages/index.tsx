@@ -15,12 +15,20 @@ const Container = styled.div`
   min-height: 100vh;
   display: flex;
   background-color: ${colors.veryLightGray};
+  @media (min-width: 768px) {
+    background-image: url("/bg-desktop-light.jpg");
+  }
 `;
 
 const Main = styled.main`
   margin: 50px auto;
-  max-width: 340px;
-  width: 100%;
+  min-width: 340px;
+  width: 80%;
+  @media (min-width: 768px) {
+    min-width: 550px;
+    width: 35%;
+    margin: 75px auto;
+  }
 `;
 
 const Header = styled.header`
@@ -34,6 +42,13 @@ const Title = styled.h1`
   letter-spacing: 0.5rem;
   color: ${colors.veryLightGray};
   margin: 0;
+`;
+
+const DndInfoFooter = styled.div`
+  margin-top: 3rem;
+  color: ${colors.darkGrayishBlue};
+  font-size: 0.875rem;
+  text-align: center;
 `;
 
 export interface TodoItem {
@@ -68,7 +83,10 @@ export default function Home() {
               setTodos([...todos, value]);
             }}
           />
-          {todos ? <TodoList todos={todos} setTodos={setTodos} /> : null}
+          {todos.length !== 0 ? (
+            <TodoList todos={todos} setTodos={setTodos} />
+          ) : null}
+          <DndInfoFooter>Drag and drop to reorder list</DndInfoFooter>
         </Main>
       </Container>
     </>
