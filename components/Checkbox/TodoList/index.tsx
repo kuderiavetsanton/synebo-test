@@ -70,10 +70,11 @@ const FilterButton = styled.button<{ active?: boolean }>`
   }
 `;
 
-const TodoFooter = styled.div`
+const TodoFooter = styled.div<{ isEmpty: boolean }>`
   display: flex;
   padding: 1.25rem;
-  border-top: ${variables.lightGrayBorder};
+  border-top: ${({ isEmpty }) =>
+    isEmpty ? "auto" : variables.lightGrayBorder};
   justify-content: space-between;
   align-items: center;
 `;
@@ -124,7 +125,6 @@ function TodoList({
     "all" | "completed" | "active"
   >("all");
   const isMobile = useIsMobile();
-  console.log(isMobile);
 
   const draggedItem = useMemo(
     () => todos.find((item) => item.id === dragged?.id),
@@ -232,7 +232,7 @@ function TodoList({
                 ></TodoListItem>
               ) : null}
             </SortableOverlay>
-            <TodoFooter>
+            <TodoFooter isEmpty={!currentTodos[filterState].length}>
               <FooterText>{activeItems.length} items left</FooterText>
               {!isMobile ? (
                 <FilterDesktopContainer>{filterButtons}</FilterDesktopContainer>

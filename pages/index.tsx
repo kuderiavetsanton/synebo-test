@@ -84,9 +84,11 @@ export default function Home() {
             }}
           />
           {todos.length !== 0 ? (
-            <TodoList todos={todos} setTodos={setTodos} />
+            <>
+              <TodoList todos={todos} setTodos={setTodos} />
+              <DndInfoFooter>Drag and drop to reorder list</DndInfoFooter>
+            </>
           ) : null}
-          <DndInfoFooter>Drag and drop to reorder list</DndInfoFooter>
         </Main>
       </Container>
     </>

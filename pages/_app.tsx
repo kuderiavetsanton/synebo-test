@@ -7,8 +7,6 @@ const font = Josefin_Sans({
   subsets: ["latin"],
 });
 
-console.log(font);
-
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <div className={font.className}>
