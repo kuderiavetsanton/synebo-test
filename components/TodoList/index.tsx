@@ -6,10 +6,10 @@ import React, {
   useLayoutEffect,
   useEffect,
 } from "react";
-import { TodoItem } from "../../../pages";
-import { SortableOverlay } from "../../SortableOverlay";
-import colors from "../../../styles/colors.module.scss";
-import variables from "../../../styles/variables.module.scss";
+import { TodoItem } from "../../pages";
+import { SortableOverlay } from "../SortableOverlay";
+import colors from "../../styles/colors.module.scss";
+import variables from "../../styles/variables.module.scss";
 import debounce from "lodash/debounce";
 
 import {
@@ -29,7 +29,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import styled from "styled-components";
-import TodoListItem from "../../TodoListItem";
+import TodoListItem from "../TodoListItem";
 
 const TodoListContainer = styled.ul`
   margin: 1.125rem 0;
